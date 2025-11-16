@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyShell - Interactive OS Shell Project</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Load Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Use Inter font, Tailwind's default sans-serif */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 */
+            color: #cbd5e1; /* slate-300 */
+        }
+        
+        /* Custom scrollbar for a more modern feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; /* slate-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #06b6d4; /* cyan-500 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0891b2; /* cyan-600 */
+        }
+        
+        /* So code-block line-numbers don't interfere with copy */
+        .prism-code .line-numbers-rows {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none;
+        }
+        
+        /* Background grid pattern for the hero */
+        .hero-bg {
+            background-image:
+                linear-gradient(to right, rgba(30, 41, 59, 0.5) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-700">
+        <nav class="container mx-auto max-w-6xl px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <!-- Icon -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-cyan-400">
+                    <path d="M4 17L10 17M6 10L12 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 6.00092C3 5.30177 3.20387 4.62319 3.58579 4.06066C3.9677 3.49813 4.50756 3.08579 5.12132 2.87868C5.73508 2.67157 6.4029 2.67157 7.01666 2.87868C7.63042 3.08579 8.17028 3.49813 8.5522 4.06066L11.4478 8.93934C11.8297 9.50187 12.3696 9.91421 12.9833 10.1213C13.5971 10.3284 14.2649 10.3284 14.8787 10.1213C15.4924 9.91421 16.0323 9.50187 16.4142 8.93934L19.3098 4.06066C19.6917 3.49813 20.2316 3.08579 20.8454 2.87868C21.4591 2.67157 22.1269 2.67157 22.7407 2.87868C23.3544 3.08579 23.8943 3.49813 24.2762 4.06066C24.6581 4.62319 24.862 5.30177 24.862 6.00092V18.0009C24.862 18.6981 24.6581 19.3767 24.2762 19.9392C23.8943 20.5017 23.3544 20.9141 22.7407 21.1212C22.1269 21.3283 21.4591 21.3283 20.8454 21.1212C20.2316 20.9141 19.6917 20.5017 19.3098 19.9392L19.3098 19.9392" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(-2.4 -2)"/>
+                </svg>
+                <span class="text-xl font-bold text-white">MyShell</span>
+            </div>
+            <a href="#code" class="px-4 py-2 bg-cyan-500 text-white text-sm font-medium rounded-md hover:bg-cyan-600 transition-colors">
+                Get Script
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- Hero Section -->
+        <section class="relative h-screen flex items-center justify-center text-center overflow-hidden hero-bg">
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900/80 to-slate-900"></div>
+            <div class="relative z-10 px-6">
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight mb-4">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">MyShell</span>
+                </h1>
+                <p class="text-lg md:text-2xl text-slate-300 max-w-2xl mx-auto mb-8">
+                    An interactive, feature-packed shell built for our Operating Systems course.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a id="downloadButton" href="#" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-cyan-500/30 hover:scale-105 transition-all transform">
+                        <i data-lucide="download" class="inline-block w-5 h-5 mr-2 -mt-1"></i>
+                        Download Script
+                    </a>
+                    <a href="#code" class="px-8 py-3 bg-slate-700 text-white font-semibold rounded-lg shadow-lg hover:bg-slate-600 hover:scale-105 transition-all transform">
+                        <i data-lucide="code" class="inline-block w-5 h-5 mr-2 -mt-1"></i>
+                        Copy Source Code
+                    </a>
+                </div>
+                <p class="text-sm text-slate-400 mt-12">
+                    A course project for Operating System Course
+                                    Developed by
+                              Syed Mahin Hossain Rezvi
+                </p>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 lg:py-32 bg-slate-900">
+            <div class="container mx-auto max-w-6xl px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-white mb-4">Features at a Glance</h2>
+                    <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                        This isn't just a simple shell. It's a full toolkit for managing your OS.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature Card 1 -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transition-all duration-300 hover:border-cyan-500 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="folder-open"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">File Management</h3>
+                        <p class="text-slate-400">
+                            Includes simple, powerful commands like `my_ls`, `my_cat`, `my_cp`, `my_mv`, and `my_rm`.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature Card 2 -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transition-all duration-300 hover:border-cyan-500 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="power"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">System Control</h3>
+                        <p class="text-slate-400">
+                            Safely `shutdown`, `restart`, `sleep`, or `refresh` your system's memory cache with built-in commands.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 3 -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transition-all duration-300 hover:border-cyan-500 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="cpu"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">Process Management</h3>
+                        <p class="text-slate-400">
+                            Take control of running applications. `my_suspend` pauses a process, and `my_resume` brings it right back.
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 4 -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transition-all duration-300 hover:border-cyan-500 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="sliders-horizontal"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">Interactive Tweaks</h3>
+                        <p class="text-slate-400">
+                            Run the `features` command to get an interactive menu for applying Pop!_OS performance tweaks. 
+                        </p>
+                    </div>
+
+                    <!-- Feature Card 5 -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transition-all duration-300 hover:border-cyan-500 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="package-check"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">Smart Package Manager</h3>
+                        <p class="text-slate-400">
+                            Use `update` and `upgrade`. The shell automatically detects whether your system uses `apt` or `pacman`.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature Card 6 -->
+                    <div class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 transition-all duration-300 hover:border-cyan-500 hover:-translate-y-1">
+                        <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-lg flex items-center justify-center mb-6">
+                            <i data-lucide="book-open-check"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">Built-in Help</h3>
+                        <p class="text-slate-400">
+                            Never get lost. The `help` command provides a clean, comprehensive list of all available commands and what they do.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fake Terminal Demo Section -->
+        <section class="py-20 lg:py-32 bg-slate-900/50">
+            <div class="container mx-auto max-w-4xl px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-white mb-4">See It in Action</h2>
+                    <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                        Here's a preview of the built-in `help` command.
+                    </p>
+                </div>
+
+                <!-- Fake Terminal Window -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-slate-700 overflow-hidden">
+                    <!-- Terminal Header -->
+                    <div class="bg-slate-700 px-4 py-3 flex items-center gap-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span class="ml-auto text-sm text-slate-300">MyShell: /home/user</span>
+                    </div>
+                    <!-- Terminal Body -->
+                    <div class="p-6">
+<pre class="text-sm text-white font-mono overflow-x-auto">
+<span class="text-cyan-400">MyShell></span> help
+
+MyShell built-in commands:
+  my_ls [opts]        - wrapper for ls (works with -l, -a)
+  my_cat <file>       - displays file
+  my_cat > <file>     - create/overwrite file (Ctrl+D to save)
+  my_cp <src> <dst>   - copy file
+  my_mv <src> <dst>   - move/rename file
+  my_rm <file>        - remove file
+
+Process Management:
+  my_suspend <PID|Name> - Suspend (pause) a process using its PID or name
+  my_resume <PID>       - Resume (un-pause) a suspended process by PID
+
+System commands:
+  update               - update package lists (apt/pacman detection)
+  upgrade              - upgrade packages (apt/pacman detection)
+  refresh              - clear system memory cache (requires sudo)
+  restart              - reboot the machine
+  shutdown             - shutdown the machine (alias: poweroff)
+  poweroff             - poweroff the machine
+  sleep                - suspend to RAM (systemctl suspend)
+  features             - NEW: Open interactive tweak menu
+  help                 - show this help text
+  exit                 - exit MyShell
+</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How to Use Section -->
+        <section class="py-20 lg:py-32 bg-slate-900">
+            <div class="container mx-auto max-w-6xl px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-white mb-4">Get Started in Seconds</h2>
+                    <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                        Using MyShell is simple. Just download the script and run it.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row justify-center gap-8">
+                    <!-- Step 1 -->
+                    <div class="flex-1 max-w-sm text-center">
+                        <div class="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-500/30">1</div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">Download</h3>
+                        <p class="text-slate-400">
+                            Download the `myshell_v4.sh` file using the button above or by copying the source code.
+                        </p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex-1 max-w-sm text-center">
+                        <div class="w-16 h-16 bg-cyan-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg shadow-cyan-500/30">2</div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">Make Executable</h3>
+                        <p class="text-slate-400">
+                            Open your terminal and run the command:<br>
+                            <code class="text-sm bg-slate-800 text-cyan-400 px-2 py-1 rounded-md mt-2 inline-block">chmod +x myshell_v4.sh</code>
+                        </p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex-1 max-w-sm text-center">
+                        <div class="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg shadow-green-500/30">3</div>
+                        <h3 class="text-2xl font-semibold text-white mb-3">Run the Shell</h3>
+                        <p class="text-slate-400">
+                            Start the shell by running:<br>
+                            <code class="text-sm bg-slate-800 text-cyan-400 px-2 py-1 rounded-md mt-2 inline-block">./myshell_v4.sh</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Source Code Section -->
+        <section id="code" class="py-20 lg:py-32 bg-slate-900/50">
+            <div class="container mx-auto max-w-4xl px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-white mb-4">The Source Code</h2>
+                    <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                        Here is the complete `myshell_v4.sh` script. Copy it or download it to get started.
+                    </p>
+                </div>
+
+                <!-- Code Block -->
+                <div class="relative group">
+                    <button id="copyButton" class="absolute top-4 right-4 z-10 px-3 py-2 bg-slate-700 text-slate-300 text-xs font-medium rounded-md hover:bg-slate-600 transition-all opacity-0 group-hover:opacity-100">
+                        <i data-lucide="clipboard" class="inline-block w-4 h-4 mr-1 -mt-px"></i>
+                        <span id="copyButtonText">Copy Code</span>
+                    </button>
+                    
+<pre class="language-bash line-numbers rounded-xl shadow-2xl border border-slate-700 prism-code" style="max-height: 600px;"><code id="shell-script-code">
+#!/bin/bash
+# myshell_v4.sh - interactive mini-shell with an ACTIONABLE features menu,
+# process suspension, and cache clearing.
+# Save as: myshell_v4.sh
+# Make executable: chmod +x myshell_v4.sh
+# Run: ./myshell_v4.sh
+
+LOGFILE="$HOME/.myshell.log"
+
+# --- HELPER FUNCTIONS (Logging, Sudo, Confirm) ---
+
+# Ensure log exists
+touch "$LOGFILE"
+
+# helper: log messages with timestamp
+log() {
+  echo "[$(date '+%F %T')] $*" &gt;&gt; "$LOGFILE"
+}
+
+# ensure we have a tty and warn if not run interactively
+if [[ ! -t 0 ]]; then
+  echo "Warning: not running in an interactive terminal. Some prompts may not work."
+fi
+
+# helper: require sudo for system actions
+require_sudo() {
+  if [[ $EUID -ne 0 ]]; then
+    echo "This action requires root privileges. Asking sudo..."
+    sudo -v || { echo "sudo failed or was cancelled."; return 1; }
+  fi
+  return 0
+}
+
+# helper: yes/no prompt (default: no)
+confirm() {
+  # usage: confirm "Are you sure?"
+  local prompt="${1:-Are you sure?}"
+  while true; do
+    read -p "$prompt [y/N]: " ans
+    case "${ans,,}" in
+      y|yes) return 0 ;;
+      n|no|"" ) return 1 ;;
+      *) echo "Please answer 'y' or 'n'." ;;
+    esac
+  done
+}
+
+# --- HELP & FEATURE MENU FUNCTIONS ---
+
+# Print help
+print_help() {
+  cat &lt;&lt;'HELP'
+MyShell built-in commands:
+  my_ls [opts]        - wrapper for ls (works with -l, -a)
+  my_cat &lt;file&gt;       - displays file
+  my_cat &gt; &lt;file&gt;     - create/overwrite file (Ctrl+D to save)
+  my_cp &lt;src&gt; &lt;dst&gt;   - copy file
+  my_mv &lt;src&gt; &lt;dst&gt;   - move/rename file
+  my_rm &lt;file&gt;        - remove file
+
+Process Management:
+  my_suspend &lt;PID|Name&gt; - Suspend (pause) a process using its PID or name
+  my_resume &lt;PID&gt;       - Resume (un-pause) a suspended process by PID
+
+System commands:
+  update               - update package lists (apt/pacman detection)
+  upgrade              - upgrade packages (apt/pacman detection)
+  refresh              - clear system memory cache (requires sudo)
+  restart              - reboot the machine
+  shutdown             - shutdown the machine (alias: poweroff)
+  poweroff             - poweroff the machine
+  sleep                - suspend to RAM (systemctl suspend)
+  features             - **NEW: Open interactive tweak menu**
+  help                 - show this help text
+  exit                 - exit MyShell
+HELP
+}
+
+# --- TWEAK HELPER FUNCTIONS (for 'features' menu) ---
+
+# [1]
+install_performance_tweaks() {
+  echo "Installing 'nohang' and 'preload'..."
+  require_sudo || return 1
+  sudo apt-get install nohang preload
+  log "features: ran install_performance_tweaks"
+  echo "Done."
+}
+
+# [2]
+enable_performance_services() {
+  echo "Enabling 'nohang' and 'preload' systemd services..."
+  require_sudo || return 1
+  sudo systemctl enable nohang
+  sudo systemctl enable preload
+  log "features: ran enable_performance_services"
+  echo "Done."
+}
+
+# [3]
+disable_oomd() {
+  echo "Disabling systemd-oomd (replaced by nohang)..."
+  require_sudo || return 1
+  sudo systemctl disable systemd-oomd
+  log "features: ran disable_oomd"
+  echo "Done."
+}
+
+# [4]
+set_cpu_governor() {
+  echo "Setting CPU governor to 'performance'..."
+  require_sudo || return 1
+  echo 'w /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor - - - - performance' | sudo tee /usr/lib/tmpfiles.d/cpu-governor.conf &gt; /dev/null
+  log "features: ran set_cpu_governor"
+  echo "CPU governor policy created. (May require reboot to apply)"
+}
+
+# [5]
+set_power_policies() {
+  echo "Setting various power policies to 'performance' (PCIe, SATA, etc.)..."
+  require_sudo || return 1
+  echo 'w /sys/devices/system/cpu/cpufreq/policy*/energy_performance_preference - - - - performance' | sudo tee /usr/lib/tmpfiles.d/energy_performance_preference.conf &gt; /dev/null
+  echo 'w /sys/module/pcie_aspm/parameters/policy - - - - performance' | sudo tee /usr/lib/tmpfiles.d/pcie_aspm_performance.conf &gt; /dev/null
+  echo 'w /sys/class/drm/card0/device/power_dpm_state - - - - performance' | sudo tee /usr/lib/tmpfiles.d/power_dpm_state.conf &gt; /dev/null
+  
+  echo '# SATA Active Link Power Management' | sudo tee /usr/lib/udev/rules.d/50-sata.rules &gt; /dev/null
+  echo 'ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="max_performance"' | sudo tee -a /usr/lib/udev/rules.d/50-sata.rules &gt; /dev/null
+  
+  log "features: ran set_power_policies"
+  echo "Power policies created. (May require reboot to apply)"
+}
+
+# [6]
+install_sound_drivers() {
+  echo "Installing sound packages (pulseaudio, jackd2)..."
+  require_sudo || return 1
+  sudo apt-get install alsa-firmware-loaders pulseaudio pulseaudio-module-jack jackd2
+  log "features: ran install_sound_drivers"
+  echo "Done."
+}
+
+# [7]
+tweak_sound_config() {
+  echo "This will open '/etc/pulse/daemon.conf' in 'nano'."
+  echo "Per the guide, you must manually find and edit lines like:"
+  echo "  ; resample-method = ... -&gt; resample-method = soxr-vhq"
+  echo "  ; default-sample-format = ... -&gt; default-sample-format = float32le"
+  echo "  ; default-sample-rate = ... -&gt; default-sample-rate = 96000"
+  confirm "Open nano to edit this file now?" || return 1
+  require_sudo || return 1
+  sudo nano /etc/pulse/daemon.conf
+  log "features: opened daemon.conf for manual edit"
+  echo "File edit complete. You may need to restart pulseaudio."
+}
+
+# [8]
+install_fonts() {
+  echo "Installing common fonts (Noto, DejaVu, Liberation)..."
+  # Note: This is a translation of the `yay` command for Debian
+  require_sudo || return 1
+  sudo apt-get install fonts-noto fonts-noto-cjk fonts-dejavu fonts-liberation-sans fonts-opensans
+  log "features: ran install_fonts"
+  echo "Done."
+}
+
+# [9]
+set_io_schedulers() {
+  echo "Creating udev rule for I/O schedulers (bfq for SSD/HDD, none for NVMe)..."
+  require_sudo || return 1
+  {
+    echo '# set scheduler for NVMe'
+    echo 'ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/scheduler}="none"'
+    echo '# set scheduler for SSD and eMMC'
+    echo 'ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="bfq"'
+    echo '# set scheduler for rotating disks'
+    echo 'ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"'
+  } | sudo tee /etc/udev/rules.d/60-ioschedulers.rules &gt; /dev/null
+  
+  echo "Reloading udev rules..."
+  sudo udevadm control --reload-rules && sudo udevadm trigger
+  log "features: ran set_io_schedulers"
+  echo "I/O scheduler rules applied."
+}
+
+# [10]
+install_tlp() {
+  echo "Installing and enabling 'tlp' for battery management..."
+  require_sudo || return 1
+  sudo apt-get install tlp
+  sudo systemctl enable tlp.service
+  sudo systemctl start tlp.service
+  log "features: ran install_tlp"
+  echo "TLP is now installed and running."
+}
+
+# [11]
+install_fusuma() {
+  echo "Installing 'fusuma' for touchpad gestures..."
+  require_sudo || return 1
+  sudo apt-get install ruby libinput-tools -y # Install prerequisites
+  sudo gpasswd -a $USER input
+  sudo gem install fusuma
+  log "features: ran install_fusuma"
+  echo "Fusuma installed. IMPORTANT: You must REBOOT for the group change to take effect."
+}
+
+
+# --- NEW: Interactive Features Menu ---
+run_features_menu() {
+  while true; do
+    echo "--- Linux Tweak Menu ---"
+    echo " [1] Install Performance Tweaks (nohang, preload)"
+    echo " [2] Enable Performance Services (nohang, preload)"
+    echo " [3] Disable systemd-oomd (if using nohang)"
+    echo " [4] Set CPU Governor to 'performance'"
+    echo " [5] Set Power Policies to 'performance' (PCIe, SATA, etc.)"
+    echo ""
+    echo " [6] Install Sound Packages (pulseaudio, jackd2)"
+    echo " [7] Edit Sound Config (soxr-vhq) (MANUAL EDIT)"
+    echo " [8] Install Extra Fonts (Noto, DejaVu)"
+    echo ""
+    echo " [9] Set I/O Schedulers (bfq/none)"
+    echo "[10] Install TLP (Laptop Battery Improvement)"
+    echo "[11] Install Fusuma (Touchpad Gestures)"
+    echo ""
+    echo " [q] Quit Menu"
+    echo "------------------------------------------------"
+    
+    read -p "Select an option (1-11 or q): " choice
+    
+    case $choice in
+      1) install_performance_tweaks ;;
+      2) enable_performance_services ;;
+      3) disable_oomd ;;
+      4) set_cpu_governor ;;
+      5) set_power_policies ;;
+      6) install_sound_drivers ;;
+      7) tweak_sound_config ;;
+      8) install_fonts ;;
+      9) set_io_schedulers ;;
+      10) install_tlp ;;
+      11) install_fusuma ;;
+      q|Q) echo "Exiting features menu..."; break ;;
+      *) echo "Invalid option. Please try again." ;;
+    esac
+    echo "" # Add space before next menu display
+  done
+  log "features: exited menu"
+}
+
+
+# --- SYSTEM ACTION FUNCTIONS ---
+
+# helper: detect package manager (apt or pacman)
+detect_pkg_mgr() {
+  if command -v pacman &gt;/dev/null 2&gt;&1; then
+    echo "pacman"
+  elif command -v apt &gt;/dev/null 2&gt;&1 || command -v apt-get &gt;/dev/null 2&gt;&1; then
+    echo "apt"
+  else
+    echo "unknown"
+  fi
+}
+
+# wrapper routines for update/upgrade
+do_update() {
+  local mgr
+  mgr=$(detect_pkg_mgr)
+  case "$mgr" in
+    pacman)
+      echo "Detected pacman. Running: sudo pacman -Syy"
+      require_sudo || return 1
+      sudo pacman -Syy
+      ;;
+    apt)
+      echo "Detected apt. Running: sudo apt update"
+      require_sudo || return 1
+      sudo apt update
+      ;;
+    *)
+      echo "Package manager not recognized. Please run your distro's update command manually."
+      return 1
+      ;;
+  esac
+  log "update run with pkgmgr=$mgr"
+}
+
+do_upgrade() {
+  local mgr
+  mgr=$(detect_pkg_mgr)
+  case "$mgr" in
+    pacman)
+      echo "Detected pacman. Running: sudo pacman -Syu"
+      require_sudo || return 1
+      sudo pacman -Syu
+      ;;
+    apt)
+      echo "Detected apt. Running: sudo apt full-upgrade (or apt-get upgrade)"
+      require_sudo || return 1
+      sudo apt full-upgrade -y || sudo apt-get upgrade -y
+      ;;
+    *)
+      echo "Package manager not recognized. Please run your distro's upgrade command manually."
+      return 1
+      ;;
+  esac
+  log "upgrade run with pkgmgr=$mgr"
+}
+
+# safe shutdown/reboot/poweroff/suspend helpers
+do_shutdown() {
+  if confirm "Are you sure you want to shutdown the system now?"; then
+    require_sudo || return 1
+    log "shutdown requested by user"
+    sudo systemctl poweroff
+  else
+    echo "Shutdown cancelled."
+  fi
+}
+
+do_restart() {
+  if confirm "Reboot the system now?"; then
+    require_sudo || return 1
+    log "reboot requested by user"
+    sudo systemctl reboot
+  else
+    echo "Reboot cancelled."
+  fi
+}
+
+do_poweroff() { do_shutdown; }
+
+do_sleep() {
+  if confirm "Suspend to RAM (sleep) now?"; then
+    require_sudo || return 1
+    log "suspend requested by user"
+    sudo systemctl suspend
+  else
+    echo "Suspend cancelled."
+  fi
+}
+
+# --- PROCESS & CACHE FUNCTIONS ---
+
+# Suspend a process
+do_suspend_process() {
+  local target="$1"
+  local pid
+  
+  if [[ -z "$target" ]]; then
+    echo "Usage: my_suspend &lt;PID_or_Name&gt;"
+    return 1
+  fi
+
+  # Check if target is a number (PID) or a name
+  if [[ "$target" =~ ^[0-9]+$ ]]; then
+    pid="$target"
+  else
+    # Find PID from name. -s gets a single PID.
+    pid=$(pidof -s "$target")
+    if [[ -z "$pid" ]]; then
+      echo "Error: Process name '$target' not found or multiple instances exist."
+      return 1
+    fi
+    echo "Found '$target' with PID: $pid"
+  fi
+
+  if kill -STOP "$pid"; then
+    echo "Successfully suspended process $pid."
+    log "my_suspend: suspended $pid ($target)"
+  else
+    echo "Error: Failed to suspend process $pid. Do you have permission?"
+  fi
+}
+
+# Resume a process
+do_resume_process() {
+  local pid="$1"
+  
+  if [[ -z "$pid" || ! "$pid" =~ ^[0-9]+$ ]]; then
+    echo "Usage: my_resume &lt;PID&gt;"
+    echo "Note: You must use the PID, not the name."
+    return 1
+  fi
+
+  if kill -CONT "$pid"; then
+    echo "Successfully resumed process $pid."
+    log "my_resume: resumed $pid"
+  else
+    echo "Error: Failed to resume process $pid."
+  fi
+}
+
+# Refresh system cache
+do_refresh() {
+  echo "This will clear the system page cache, dentries, and inodes."
+  if confirm "Are you sure you want to clear the system cache?"; then
+    require_sudo || return 1
+    echo "Syncing file systems..."
+    sync
+    echo "Clearing cache (echo 3 &gt; /proc/sys/vm/drop_caches)..."
+    if echo 3 | sudo tee /proc/sys/vm/drop_caches &gt; /dev/null; then
+      echo "System cache cleared."
+      log "refresh: cache cleared"
+    else
+      echo "Error: Failed to clear cache."
+    fi
+  else
+    echo "Refresh cancelled."
+  fi
+}
+
+
+# --- MAIN SHELL LOOP ---
+
+echo "Welcome to MyShell (v4 - Interactive Features)! Type 'help' for commands."
+log "myshell started by $USER on $(hostname)"
+
+while true; do
+  # read command line into array to preserve arguments with spaces
+  read -p "MyShell&gt; " -r -a argv
+  # if empty, continue
+  [[ ${#argv[@]} -eq 0 ]] && continue
+
+  cmd="${argv[0]}"
+
+  case "$cmd" in
+
+    my_ls)
+      # allow options like -l -a
+      if [[ ${#argv[@]} -gt 1 ]]; then
+        ls "${argv[@]:1}" --color=auto
+      else
+        ls --color=auto
+      fi
+      ;;
+
+    my_cat)
+      if [[ ${argv[1]} == "&gt;" ]]; then
+        filename="${argv[2]}"
+        if [[ -z "$filename" ]]; then
+          echo "Usage: my_cat &gt; filename"
+        else
+          echo "Enter content for '$filename'. Press Ctrl+D to save."
+          cat &gt; "$filename"
+          echo "Saved '$filename'."
+          log "my_cat: wrote $filename"
+        fi
+      else
+        filename="${argv[1]}"
+        if [[ -z "$filename" ]]; then
+          echo "Usage: my_cat filename"
+        else
+          if [[ -f "$filename" ]]; then
+            cat "$filename"
+          else
+            echo "File not found: $filename"
+          fi
+        fi
+      fi
+      ;;
+
+    my_cp)
+      src="${argv[1]}"; dst="${argv[2]}"
+      if [[ -z "$src" || -z "$dst" ]]; then
+        echo "Usage: my_cp source dest"
+      else
+        cp -v -- "$src" "$dst" && echo "Copied." || echo "Copy failed."
+        log "my_cp: $src -&gt; $dst"
+      fi
+      ;;
+
+    my_mv)
+      src="${argv[1]}"; dst="${argv[2]}"
+      if [[ -z "$src" || -z "$dst" ]]; then
+        echo "Usage: my_mv source dest"
+      else
+        mv -v -- "$src" "$dst" && echo "Moved/Renamed." || echo "Move failed."
+        log "my_mv: $src -&gt; $dst"
+      fi
+      ;;
+
+    my_rm)
+      target="${argv[1]}"
+      if [[ -z "$target" ]]; then
+        echo "Usage: my_rm filename"
+      else
+        if confirm "Really delete '$target' ?"; then
+          rm -v -- "$target" && echo "Removed." || echo "Remove failed."
+          log "my_rm: removed $target"
+        else
+          echo "Delete cancelled."
+        fi
+      fi
+      ;;
+
+    # --- Process & Cache Commands ---
+    my_suspend)
+      do_suspend_process "${argv[1]}"
+      ;;
+
+    my_resume)
+      do_resume_process "${argv[1]}"
+      ;;
+
+    refresh)
+      do_refresh
+      ;;
+      
+    # --- System Commands ---
+    update)
+      do_update
+      ;;
+
+    upgrade)
+      do_upgrade
+      ;;
+
+    shutdown|poweroff)
+      do_shutdown
+      ;;
+
+    restart|reboot)
+      do_restart
+      ;;
+
+    sleep|suspend)
+      do_sleep
+      ;;
+
+    # --- UPDATED FEATURES COMMAND ---
+    features)
+      run_features_menu
+      ;;
+
+    help)
+      print_help
+      ;;
+
+    exit)
+      echo "Goodbye!"
+      log "myshell exited by user"
+      break
+      ;;
+
+    *)
+      echo "Error: Command not found '$cmd'. Try 'help'."
+      ;;
+  esac
+
+  echo ""
+done
+</code></pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="py-12 bg-slate-900 border-t border-slate-800">
+        <div class="container mx-auto max-w-6xl px-6 text-center text-slate-400">
+            <p>&copy; 2025 MyShell v4.0</p>
+            <p class="text-sm">A project for the CSE324 course by Syed mahin Hossain Rezvi</p>
+        </div>
+    </footer>
+
+    <!-- Prism.js scripts for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Lucide Icons ---
+            lucide.createIcons();
+
+            // --- Copy to Clipboard ---
+            const copyButton = document.getElementById('copyButton');
+            const copyButtonText = document.getElementById('copyButtonText');
+            const codeBlock = document.getElementById('shell-script-code');
+
+            if (copyButton && codeBlock) {
+                copyButton.addEventListener('click', () => {
+                    const code = codeBlock.innerText;
+                    
+                    // Use modern clipboard API
+                    navigator.clipboard.writeText(code).then(() => {
+                        copyButtonText.innerText = 'Copied!';
+                        copyButton.classList.add('bg-green-500');
+                        
+                        setTimeout(() => {
+                            copyButtonText.innerText = 'Copy Code';
+                            copyButton.classList.remove('bg-green-500');
+                        }, 2000);
+                    }).catch(err => {
+                        // Fallback for older browsers
+                        try {
+                            const textArea = document.createElement('textarea');
+                            textArea.value = code;
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(textArea);
+
+                            copyButtonText.innerText = 'Copied!';
+                            copyButton.classList.add('bg-green-500');
+                            
+                            setTimeout(() => {
+                                copyButtonText.innerText = 'Copy Code';
+                                copyButton.classList.remove('bg-green-500');
+                            }, 2000);
+
+                        } catch (err) {
+                            copyButtonText.innerText = 'Error!';
+                            console.error('Failed to copy code: ', err);
+                        }
+                    });
+                });
+            }
+
+            // --- Download Button ---
+            const downloadButton = document.getElementById('downloadButton');
+            if (downloadButton && codeBlock) {
+                try {
+                    const scriptContent = codeBlock.innerText;
+                    const blob = new Blob([scriptContent], { type: 'text/x-shellscript' });
+                    const href = URL.createObjectURL(blob);
+                    
+                    downloadButton.href = href;
+                    downloadButton.download = 'myshell_v4.sh';
+
+                    // Clean up the object URL when the window is closed
+                    window.addEventListener('beforeunload', () => {
+                        URL.revokeObjectURL(href);
+                    });
+                } catch (e) {
+                    console.error("Error creating download link: ", e);
+                    // Hide download button if it fails
+                    downloadButton.style.display = 'none';
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
